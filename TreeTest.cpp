@@ -12,11 +12,29 @@ using std::cout, std::endl;
 
 int main() {
   ariel::Tree emptytree;
-  ariel::Tree threetree;  
+  ariel::Tree threetree;
+  ariel::Tree solutiontree; //my solution
   threetree.insert(5);
   threetree.insert(7);
   threetree.insert(3);
   
+  solutiontree.insert(50);
+  solutiontree.insert(60);
+  solutiontree.insert(10);
+  solutiontree.insert(20);
+  solutiontree.insert(9);
+  solutiontree.insert(55);
+  solutiontree.insert(65);
+  /* solutiontree visualization:
+            50
+           / \
+         10   60
+         /\   /\
+        9 20 55 65
+  */
+  
+  ariel::Tree mytree;  
+
   badkan::TestCase tc("Binary tree");
   tc
   .CHECK_EQUAL (emptytree.size(), 0)
@@ -24,6 +42,7 @@ int main() {
   .CHECK_EQUAL (emptytree.size(), 1)
   .CHECK_EQUAL (emptytree.contains(5), true)
   .CHECK_OK    (emptytree.remove(5))
+  .CHECK_EQUAL (emptytree.contains(5), false)
   .CHECK_THROWS(emptytree.remove(5))
   .CHECK_EQUAL (emptytree.size() ,0)
   
@@ -34,8 +53,16 @@ int main() {
   .CHECK_EQUAL (threetree.left(5), 3)
   .CHECK_EQUAL (threetree.right(5), 7)
   .CHECK_THROWS(threetree.insert(3))
+  .CHECK_THROWS(threetree.left(6))
   .CHECK_OK    (threetree.print())
-  
+
+  .CHECK_EQUAL (solutiontree.contains(65), true)
+  .CHECK_EQUAL (solutiontree.contains(100), false)
+  .CHECK_EQUAL (solutiontree.root(), 50)
+  .CHECK_OK    (solutiontree.remove(65))
+  .CHECK_OK    (solutiontree.print())
+  .CHECK_EQUAL (solutiontree.size(), 6)
+
   .print();
   
   cout << "You have " << tc.right() << " right answers and " << tc.wrong() << " wrong answers so your grade is " << tc.grade() << ". Great!" << endl;
