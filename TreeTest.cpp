@@ -33,8 +33,6 @@ int main() {
         9 20 55 65
   */
   
-  ariel::Tree mytree;  
-
   badkan::TestCase tc("Binary tree");
   tc
   .CHECK_EQUAL (emptytree.size(), 0)
