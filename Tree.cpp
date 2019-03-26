@@ -42,7 +42,7 @@ ariel::Tree::node* ariel::Tree::returnNode(int i){//help function to the parent,
 }
 
 ariel::Tree::node* ariel::Tree::returnNodePrivate(int data, node* nodeCheck){// go recursion until you found the correct node
-    return null;
+    return NULL;
 }
 
 int ariel::Tree::left(int i){//Return the left child of the node
