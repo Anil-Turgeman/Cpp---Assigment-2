@@ -49,6 +49,10 @@ int ariel::Tree::left(int i){//Return the left child of the node
     return 0;
 }
 
+int ariel::Tree::right(int i) {
+    return 0;
+}
+
 int ariel::Tree::root(){
     return 0;
 }
