@@ -68,8 +68,6 @@ int main() {
   .CHECK_THROWS(solutiontree.insert(55))
   .CHECK_EQUAL (solutiontree.parent(60), 50)
   .CHECK_EQUAL (solutiontree.size() ,2)
-  .CHECK_THROWS(solutiontree.right(60))
-  .CHECK_THROWS(solutiontree.right(20))
   .CHECK_EQUAL (solutiontree.size() ,4)
   .CHECK_OK    (solutiontree.print())
 
