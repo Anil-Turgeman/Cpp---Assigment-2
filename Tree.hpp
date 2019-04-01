@@ -16,13 +16,15 @@ namespace ariel{
             void   removeMatch(node* parent, node* match, bool left);
             int    sizePrivate(node* ptr);
             bool   containsPrivate(int data, node* ptr);
-            node*  returnNodePrivate(int data, node* ptr);
+            node*  SearchNodePrivate(int data, node* ptr);
             int    parentPrivate(int data, node* ptr);
             void   printPrivate(node* ptr);
             int    findSmallestPrivate(node* ptr);
+            void   DeconstructorTree(node* nodeCheck);
 
         public:
             Tree();
+            ~Tree();
             node*  createLeaf(int i);
             void   insert(int i);
             void   remove(int i);
@@ -33,7 +35,7 @@ namespace ariel{
             int    right(int i);
             int    left(int i);
             void   print();
-            node*  returnNode(int i);//help function
+            node*  SearchNode(int i);//help function
             int    findSmallest();//help function
         };
 };
