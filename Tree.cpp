@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "Tree.hpp"
-#include <exception>
+
 
 using namespace std;
 
@@ -30,7 +30,7 @@ void ariel::Tree::DeconstructorTree(node* nodeCheck){
         delete nodeCheck;
     }
     else{
-        throw std::invalid_argument("The tree is empty\n");
+        //throw std::invalid_argument("The tree is empty\n");
     }
 }
 
@@ -68,26 +68,6 @@ void ariel::Tree::insertPrivate(int data, node* nodeCheck){
     }
 }
 
-void ariel::Tree::print(){
-    printPrivate(rootValue);
-    cout << "\n";
-}
-
-void ariel::Tree::printPrivate(node* nodeCheck){//again, for the user that used the program wont know the the noods of the tree
-    if(rootValue != NULL){//print inorder, print from smallest to highest
-        if(nodeCheck->left != NULL){
-            printPrivate(nodeCheck->left);
-        }
-        cout << nodeCheck->data << " ";//print the corrent node
-        if(nodeCheck->right != NULL){
-            printPrivate(nodeCheck->right);
-        }
-    }
-    else{
-        throw std::invalid_argument( "The tree is empty\n" );
-    }
-}
-
 bool ariel::Tree::contains(int i){//Checks if the data is already in the tree
     return containsPrivate(i, rootValue);
 }
@@ -107,7 +87,7 @@ bool ariel::Tree::containsPrivate(int data, node* nodeCheck){
         }
     }
     else{
-        throw std::invalid_argument( "The data is not in the tree\n" );
+        //throw std::invalid_argument( "The data is not in the tree\n" );
         return false;
     }
 }
@@ -116,7 +96,7 @@ int ariel::Tree::right(int i){//return the right child of a giving node
     node* ptr = SearchNode(i);
     if(ptr != NULL){
         if(ptr->right == NULL){
-            throw std::invalid_argument( "The data is not in the tree\n" );
+            //throw std::invalid_argument( "The data is not in the tree\n" );
             return -1;
         }
         else{
@@ -124,7 +104,7 @@ int ariel::Tree::right(int i){//return the right child of a giving node
         }
     }
     else{
-        throw std::invalid_argument( "The tree is empty\n" );
+        //throw std::invalid_argument( "The tree is empty\n" );
         return -1;
     }
 }
@@ -133,7 +113,7 @@ int ariel::Tree::left(int i){//Return the left child of a giving node
     node* ptr = SearchNode(i);
     if(ptr != NULL){
         if(ptr->left == NULL){
-            throw std::invalid_argument( "The data is not in the tree\n" );
+            //throw std::invalid_argument( "The data is not in the tree\n" );
             return -1;
         }
         else{
@@ -141,7 +121,7 @@ int ariel::Tree::left(int i){//Return the left child of a giving node
         }
     }
     else{
-        throw std::invalid_argument( "The tree is empty\n" );
+        //throw std::invalid_argument( "The tree is empty\n" );
         return -1;
     }
 }
@@ -151,7 +131,7 @@ int ariel::Tree::root(){
         return rootValue->data;
 
     else{
-        throw std::invalid_argument( "The tree is empty\n" );
+        //throw std::invalid_argument( "The tree is empty\n" );
         return -1;
     }
 }
@@ -162,7 +142,7 @@ int ariel::Tree::size(){//Return the size of the tree
 
 int ariel::Tree::sizePrivate(node* nodeCheck){
     if(nodeCheck == NULL){
-        throw std::invalid_argument( "the tree is empty\n" );
+        //throw std::invalid_argument( "the tree is empty\n" );
         return -1;
     }
     else{
@@ -188,7 +168,7 @@ ariel::Tree::node* ariel::Tree::SearchNodePrivate(int data, node* nodeCheck){// 
             }
         }
     }else{
-            throw std::invalid_argument( "The tree is empty\n" );
+            //throw std::invalid_argument( "The tree is empty\n" );
             return NULL;
         }
 }
@@ -218,12 +198,12 @@ int ariel::Tree::parentPrivate(int data, node* nodeCheck){
             }
         }
         else{
-            throw std::invalid_argument("we're at the root\n");
+            //throw std::invalid_argument("we're at the root\n");
             return -1;
         }
     }
     else{
-        throw std::invalid_argument("The tree is empty or the data is not in the tree\n");
+        //throw std::invalid_argument("The tree is empty or the data is not in the tree\n");
         return -1;
     }
 }
@@ -234,7 +214,7 @@ int ariel::Tree::findSmallest(){
 
 int ariel::Tree::findSmallestPrivate(node* nodeCheck){
     if(rootValue == NULL){
-        throw std::invalid_argument( "the tree is empty\n" );
+        //throw std::invalid_argument( "the tree is empty\n" );
         return -1;
     }
     else{
@@ -247,10 +227,29 @@ int ariel::Tree::findSmallestPrivate(node* nodeCheck){
     }
 }
 
+void ariel::Tree::print(){
+    printPrivate(rootValue);
+    cout << "\n";
+}
+
+void ariel::Tree::printPrivate(node* nodeCheck){//again, for the user that used the program wont know the the noods of the tree
+    if(rootValue != NULL){//print inorder, print from smallest to highest
+        if(nodeCheck->left != NULL){
+            printPrivate(nodeCheck->left);
+        }
+        cout << nodeCheck->data << " ";//print the corrent node
+        if(nodeCheck->right != NULL){
+            printPrivate(nodeCheck->right);
+        }
+    }
+    else{
+        //throw std::invalid_argument( "The tree is empty\n" );
+    }
+}
+
 void ariel::Tree::remove(int i){//remove a number
    removePrivate(i, rootValue);
 }
-
 
 void ariel::Tree::removePrivate(int data, node* parent){
     if(rootValue != NULL){
@@ -275,12 +274,12 @@ void ariel::Tree::removePrivate(int data, node* parent){
                 }
             }
             else{
-                throw std::invalid_argument( "The data is not in the tree\n" );  
+                //throw std::invalid_argument( "The data is not in the tree\n" );  
             } 
         }
     }
     else{
-        throw std::invalid_argument( "The tree is empty\n" );
+        //throw std::invalid_argument( "The tree is empty\n" );
     }
 }
 
@@ -312,7 +311,7 @@ void ariel::Tree::removeRoot(){
         }
     }
     else{
-        throw std::invalid_argument( "The tree is empty\n" );  
+        //throw std::invalid_argument( "The tree is empty\n" );  
     }
 }
 
@@ -365,6 +364,6 @@ void ariel::Tree::removeMatch(node* parent, node* match, bool leftOrRight){//lef
 
     }
     else{
-        throw std::invalid_argument( "The tree is empty so we don't have anything to remove...\n" );  
+        //throw std::invalid_argument( "The tree is empty so we don't have anything to remove...\n" );  
     }
 }
