@@ -64,7 +64,7 @@ void ariel::Tree::insertPrivate(int data, node* nodeCheck){
     }
     
     else{//in the case the data already in the tree we throw exception
-        throw std::invalid_argument( "The data is already in the tree\n" );
+        //throw std::invalid_argument( "The data is already in the tree\n" );
     }
 }
 
