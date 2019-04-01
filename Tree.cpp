@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "Tree.hpp"
-#include <stdexcept>
+#include <exception>
 
 using namespace std;
 
