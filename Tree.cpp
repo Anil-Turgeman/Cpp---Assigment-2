@@ -1,287 +1,225 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
 #include "Tree.hpp"
+#include <stdexcept>
+#include <iostream>
+
 using namespace std;
-
-
-namespace ariel{
-
-	Node* Root;
-	int num;
-
-	Tree::Tree(){
-		Root = NULL;
-		num = 0;
-	}
-
-
-	Tree::~Tree(){
-		destroyTree(Root);
-	}
-
-	void Tree::destroyTree(Node* leaf){ //recursive call to free memory
-		if (leaf == NULL) {
-			return;
-		}
-		destroyTree(leaf->left);
-		destroyTree(leaf->right);
-		delete(leaf);
-	}
+using namespace ariel;
 
 
 
+Node::Node(int data){
+  this->_data = data;
+  this->left = NULL;
+  this->right = NULL;
+}
 
-	void Tree::insert(int a){
-		if (Root == NULL){ //root option
-			Root = new Node;
-			Root->data = a;
-			Root->right = NULL;
-			Root->left = NULL;
-			Root->parent = NULL;
-			num++;
-		}else{
-			Insert (a, Root); //get to right place if there is a root
-		}
-	}
-
-	void Tree::Insert(int a, Node* now){
-		if(a == now->data){ //exception if node already here
-			throw string("already here\n");
-		}else{
-			if(a > now->data){ //finding the right place for the node
-				if(now->right == NULL){
-					now->right = new Node;
-					now->right->data = a;
-					now->right->parent = now;
-					now->right->right = NULL;
-					now->right->left = NULL;
-					num++;
-				}else{
-					Insert(a, now->right); //going to next node if there's a need
-				}
-			}else{
-				if(now->left == NULL){ //other option, same as before just to left side
-					now->left = new Node;
-					now->left->data = a;
-					now->left->right = NULL;
-					now->left->parent = now;
-					now->left->left = NULL;
-					num++;
-				}else{
-					Insert(a, now->left);
-				}
-			}
-		}
-	}
-
-	int Tree::size(){ //number of nodes
-		return num;
-	}
-
-	bool Tree::contains(int a){
-		if(Contains(a, Root) == NULL){ //sending for a function to find the node
-			return false;
-		}
-		return true;
-		}
-
-	Node* Tree::Contains(int key, Node *leaf){
-		if(leaf != NULL){ //if there are still nodes to check
-			if(key == leaf->data){ //found the node
-				return leaf;
-			}
-			if(key < leaf->data){ //checking to the right and left
-				return Contains(key, leaf->left);
-			}else{
-				return Contains(key, leaf->right);
-			}
-		}else{
-			return NULL;
-		}
-	}
-
-	Node* Tree::find(int a){
-		Node* temp = Contains(a, Root); //finding the right node
-		if (temp == NULL){ //exception throw if there's a need
-			throw string("fail");
-		}
-		return temp;
-	}
+int Node::getData(){
+  return _data;
+}
 
 
+Tree::Tree(){
+  _root = NULL;
+  _size = 0;
+}
 
-	int Tree::parent (int a){ //return the data of the node parent
-		return find(a)->parent->data;
-	}
-	int Tree::right (int a){ //return the data of the node right son
-		return find(a)->right->data;
-	}
-	int Tree::left (int a){ //return the data of the node left son
-		return find(a)->left->data;
-	}
-
-	void Tree::remove(int a){
-		/*Node* temp = Contains(a, Root); //finding the node to remove
-		if(temp == NULL){ //exception if the node isn't in the tree
-			throw string("not found");
-		}
-		remove(temp); //function to actually delete the node
-		num--; //update tree size
-		return;*/
-		}
-
-	void Tree::remove(Node* leaf){
-		if (leaf->right == NULL && leaf->left == NULL){ //in case that the node doesn't have sons
-			if (leaf->data == Root->data){ //in case node is root
-				Root = NULL;
-				delete(leaf);
-				return;
-			}
-			if (leaf->parent->right->data == leaf->data){ //updating the father
-				leaf->parent->right = NULL; //if node is right son
-			}else{
-				leaf->parent->left = NULL; //if node is left son
-			}
-			delete(leaf);
-			return;
-		}
-		if (leaf->right == NULL){ //node to delete has a right son
-			if (leaf->data == Root->data){ //checking if the node to delete is root
-				Root = leaf->left; //update root
-				delete(leaf);
-				return;
-			}
-			if (leaf->parent->right->data == leaf->data){ //checking if node is right or left son of father
-				leaf->parent->right = leaf->left; //update father
-			}else{
-				leaf->parent->left = leaf->left; //else case update father
-			}
-			delete(leaf);
-			return;
-		}
-		if (leaf->left == NULL){ //node to delete has a right son
-			if (leaf->data == Root->data){ //checking if the node to delete is root
-				Root = leaf->right; //update root
-				delete(leaf);
-				return;
-			}
-			if (leaf->parent->right->data == leaf->data){ //checking if node is right or left son of father
-				leaf->parent->right = leaf->right; //update father
-			}else{
-				leaf->parent->left = leaf->right; //else case update father
-			}
-			delete(leaf);
-			return;
-		}
-		Node* temp = closest(leaf->right); //getting the next bigger node
-		if (temp->right != NULL){ //checking if the next bigger node has a right son
-			leaf->right = temp->right; //getting the son to the right place
-		}
-		leaf->data = temp->data; //update the deleted node data
-		delete(temp); //removing the temp node
-		return;
-	}
+Tree::~Tree(){
+  Destroy(_root);
+}
+void Tree::Destroy(Node* curr){
+  if(curr==NULL){
+    return;
+  }
+  Destroy(curr->left);
+  Destroy(curr->right);
+  delete curr;
+}
 
 
-	Node* Tree::closest(Node* now){ //getting the next bigger node
-		if (now->left == NULL && now->right == NULL){ //gotten to a leaf
-			if (now->parent->left->data == now->data){ //checking which son is the leaf
-				now->parent->left = NULL; //left case
-			}else{
-				now->parent->right = NULL; //right case
-			}
-			return now;
-		}else{
-			if (now->left != NULL){ //recursive call if there is a smaller next bigger
-				closest(now->left);
-			}else{
-				return now;
-			}
-		}
-	}
+Tree& Tree::insert(int n){
+  return *this;
+   if(contains(n)){
+     throw invalid_argument("already in");
+   }
+    if(_size==0){
+      _root = new Node(n);
+      _size++;
+    }else{
+    Node* newNode = new Node(n);
+    Node* curr = _root;
+      while(true){
+      if((*newNode).getData()<(*curr).getData()){
+        if(curr->left == NULL){
+          curr->left = newNode;
+          _size++;
+          break;
+        }else{
+          curr = curr->left;
+        }
+      }else{
+        if(curr->right == NULL){
+          curr->right = newNode;
+          _size++;
+          break;
+        }else{
+          curr = curr->right;
+        }
+      }
+    }
+  }
+  return *this;
+}
 
-	void Tree::print(){
-			print(Root);
-			}
-	void Tree::print(Node* leaf){ //print according to left root right
-			if(leaf==NULL){
-				return;
-			}
-			print(leaf->left);
-			cout<<leaf->data<<",";
-			print(leaf->right);
-		}
+
+void Tree::remove(int i){
+   if(contains(i)){
+     if(_size==1){;
+       _size--;
+       delete _root;
+       return;
+     }
+     Node* toRemove = find(i);
+     Node* parentof = find(parent(i));
+     if(toRemove->left == NULL && toRemove->right == NULL){
+       cout << "no childs" << endl;
+       if(parentof->left->getData() == toRemove->getData()){
+         cout << "left child" << endl;
+         parentof->left = NULL;
+       }else{
+         parentof->right = NULL;
+       }
+     }else if(toRemove->left != NULL && toRemove->right == NULL){
+       if(parentof->left->getData() == i){
+         parentof->left = toRemove->left;
+       }else{
+         parentof->right = NULL;
+       }
+     }else if(toRemove->left == NULL && toRemove->right != NULL){
+       if(parentof->left->getData() == i){
+         parentof->left = toRemove->right;
+       }else{
+         parentof->right = toRemove->right;
+       }
+
+     }
+     else{
+       if(parentof->left->getData() == i){
+           Node* toMove = toRemove->right->left;
+           toRemove->right->left = toRemove->left;
+           Node* addTo = toRemove->left;
+           while(addTo->right != NULL){
+             addTo = addTo->right;
+           }
+           addTo->right = toMove;
+           parentof->left = toRemove->right;
+         }else{
+           Node* toMove = toRemove->left->right;
+           toRemove->left->right = toRemove->right;
+           Node* addTo = toRemove->right;
+           while(addTo->left != NULL){
+             addTo = addTo->left;
+           }
+           addTo->left = toMove;
+           parentof->right = toRemove->left;
+         }
+     }
+       _size--;
+       delete toRemove;
+   }else{
+     throw invalid_argument("doesn't have this number");
+   }
+}
+int Tree::size(){
+  return _size;
+}
+bool Tree::contains(int i){
+  return true;
+   try{
+   Node* isIn = find(i);
+   }
+   catch(exception& e){
+     return false;
+   }
+   return true;
+}
+int Tree::root(){
+  if(_size>0){
+    return _root->getData();
+  }else{
+    throw invalid_argument("there is no root");
+  }
+}
+int Tree::parent(int i){
+  return 0;
+   if(!contains(i) || find(i) == _root){
+     throw invalid_argument("has no parent or does not contains specified node requested the parent of.");
+   }else{
+     Node* par = _root;
+     Node* curr = find(i);
+     while((par->right!=NULL && par->right->getData() != curr->getData()) && (par->left != NULL && par->left->getData() != curr->getData())){
+       if(i<par->getData()){
+         par = par->left;
+       }else{
+         par = par->right;
+       }
+     }
+     return par->getData();
+   }
+}
+int Tree::left(int i){
+  return 0;
+   Node* locate = find(i);
+   return locate->left->getData();
+}
+int Tree::right(int i){
+  return 0;
+   Node* locate = find(i);
+   return locate->right->getData();
+}
+
+void Tree::print(){
+  printRecursive(_root);
+}
+
+void Tree::printRecursive(Node* curr){
+  if(curr==NULL){
+    return;
+  }
+  printRecursive(curr->left);
+  cout << curr->getData() << " ";
+  printRecursive(curr->right);
+}
 
 
-	int Tree::root(){ //return root data
-		return Root->data;
-	}
+Node* Tree::find(int i){
+  Node* r = this->_root;
+  return r;
+   if(size() > 0 ){
+   return find(_root,i);
+   }else{
+   cout << "an empty tree" << endl;
+   throw invalid_argument("cannot find anything in empty tree.");
+   }
+}
 
-/*	void Tree::buildTree(Node* root, int scrWidth, int itemWidth)
-		// breadth-first traversal with depth limit based on screen width and output field width for one elemet
-		{
-		    bool notFinished = false;
-		    // check the root
-		    if (root)
-		    {
-		        notFinished = true;
-		    }
-		    // calculate maximum possible depth
-		    int depth = 1;
-		    int field = scrWidth;
-		    while (field > itemWidth)
-		    {
-		        depth++;
-		        field /= 2;
-		    }
-		    // check result
-		    if (depth < 1)
-		    {
-		        cout << " -= erroneous output options =-" << endl;
-		        return;
-		    }
-		    Node** pItems = new Node*[1];
-		    *pItems = root; // pointer to item on the first level
-		    int itemCnt = 1;
-		    int divWidth = 1;
-		    // loop for output not more than depth levels until the data is not finished
-		    // where level is current depth of tree, and root is on the first level
-		    for (int level = 1; level <= depth && notFinished; level++)
-		    {
-		        itemCnt = (level == 1) ? 1 : (itemCnt * 2);
-		        divWidth *= 2;
-		        // make list of pointers to refer items on next level
-		        Node** list = new Node*[itemCnt * 2];
-		        // output all utems of that level
-		        int nextCnt = 0;
-		        notFinished = false;
-		        for (int i = 0; i < itemCnt; i++, nextCnt += 2)
-		        {
-		            int curWidth = (scrWidth / divWidth) * ((i > 0) ? 2 : 1);
-		            cout << setw((curWidth>=itemWidth) ? curWidth:(itemWidth/(1+(i==0))));
-		            if (pItems[i])
-		            {
-		                cout << pItems[i]->data;
-		                list[nextCnt] = pItems[i]->left;
-		                list[nextCnt + 1] = pItems[i]->right;
-		                if (list[nextCnt] || list[nextCnt + 1])
-		                    notFinished = true;
-		            }
-		            else
-		            {
-		                cout << ".";
-		                list[nextCnt] = NULL;
-		                list[nextCnt + 1] = NULL;
-		            }
-		        }
-		        cout << endl;
-		        // free the memory allocated for list of pointers
-		        if (pItems)
-		            delete[] pItems;
-		        pItems = list; // and shift to new one (for next level)
-		    }
-		    delete[] pItems;
-		}*/
+Node* Tree::find(Node* curr,int i){
+  return curr;
+   if(curr == NULL){
+       throw invalid_argument("no node provided. for find function");
+   }
+   if(curr->getData()==i){
+       return curr;
+   }else if(i<curr->getData() && curr->left != NULL){
+     return find(curr->left,i);
+   }else if(i>curr->getData() && curr->right != NULL){
+     return find(curr->right,i);
+   }
+   else{
+     throw invalid_argument("could not find the requested node");
+   }
+}
 
-};
+Node& Tree::getRoot(){
+  Node* node = this->_root;
+  return *node;
+}
