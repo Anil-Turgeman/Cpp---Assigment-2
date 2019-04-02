@@ -6,7 +6,7 @@ namespace ariel{
       Node* left;
       Node* right;
     public:
-      Node(int data); //constructor
+      Node(int data);
       Node* getLeft(); 
       Node* getRight(); 
       void setLeft(Node* left);
@@ -18,25 +18,21 @@ namespace ariel{
     private:
       int _size;
       Node* _root;
+      Node* find(int i);
+      void printRecursive(Node* curr);
+      void Destroy(Node* curr);
     public:
-    //Constructor & Destructor
       Tree();
       ~Tree();
-    //Methods
+      Node* getRoot();
       Tree& insert(int i);
       void remove(int i);
       int size();
-      bool contains(int i);
       int root();
-      int parent(int i); //returns the parent of node conatining i.
-      int left(int i); //returns the data inside the left child of node containing i.
-      int right(int i); //returns the data inside the right child of node containing i.
-      void print(); //prints the tree in-order.
-      Node* getRoot(); //getter for the root.
-    private:
-      Node* find(int i); //finds i inside the tree
-      void printRecursive(Node* curr);
-      void Destroy(Node* curr);
-      
+      int parent(int i);
+      int left(int i);
+      int right(int i);
+      bool contains(int i);
+      void print();
   };
 }
