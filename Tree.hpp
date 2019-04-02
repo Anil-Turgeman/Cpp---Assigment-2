@@ -1,42 +1,38 @@
-#include <iostream>
-#include <string>
-
+#pragma once
 namespace ariel{
-
-struct Node{
-	int data;
-	Node* right;
-	Node* left;
-	Node* parent;
+class Node{
+public:
+  int _data;
+  Node* left;
+  Node* right;
+  Node(int data);
+  int getData();
 };
-
-
 class Tree{
-
-	int num;
-	Node *Root;
-
-	void Insert(int a, Node* now);
-	Node *Contains(int key, Node *leaf);
-	void remove(Node* leaf);
-	Node* closest(Node* now);
-	void destroyTree(Node* leaf);
-	Node* find(int a);
-	void print(Node* leaf);
+public:
+  Node* _root;
+private:
+  int _size;
 
 public:
-	Tree();
-	~Tree();
-	void insert(int a);
-	int size();
-	bool contains(int a);
-	int parent (int a);
-	int right (int a);
-	int left (int a);
-	void remove(int a);
-	void print();
-	int root();
-	//void buildTree(Node* Root,int a, int b);
-
+//Constructor & Destructor
+  Tree();
+  ~Tree();
+//Methods
+  Node* find(int i);
+  Tree& insert(int i);
+  void remove(int i);
+  int size();
+  bool contains(int i);
+  int root();
+  int parent(int i);
+  int left(int i);
+  int right(int i);
+  void print();
+private:
+  void printRecursive(Node* curr);
+  Node* find(Node* curr,int i);
+  void Destroy(Node* curr);
+  Node& getRoot();
 };
 }
