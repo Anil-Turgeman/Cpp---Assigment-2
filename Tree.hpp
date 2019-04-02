@@ -1,22 +1,17 @@
 #include <iostream>
 using namespace std;
 
-struct Node
-{
+struct Node{
 	int data;
 	Node* left;
 	Node* right;
 	Node* parent;
-
 	Node(int x);
-	// ~Node();
 };
 
-namespace ariel
-{
+namespace ariel{
 
-class Tree
-{
+class Tree{
   private:
   int tree_size;
 	void helpInsert(Node* myNode, Node* node,Node* parent);
@@ -41,4 +36,4 @@ class Tree
 	void remove(int x);
 	~Tree();
 };
-} // namespace ariel
+}
