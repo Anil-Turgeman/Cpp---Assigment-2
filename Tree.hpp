@@ -1,39 +1,42 @@
 #include <iostream>
-using namespace std;
-
-struct Node{
-	int data;
-	Node* left;
-	Node* right;
-	Node* parent;
-	Node(int x);
-};
+#include <string>
 
 namespace ariel{
 
+struct Node{
+	int data;
+	Node* right;
+	Node* left;
+	Node* parent;
+};
+
+
 class Tree{
-  private:
-  int tree_size;
-	void helpInsert(Node* myNode, Node* node,Node* parent);
-	void helpPrint(Node* node);
-	Node* catch_num(Node* node, int x);
-	bool helpContains(Node* node,int x);
 
+	int num;
+	Node *Root;
 
-  public:
-	Node* myroot;
+	void Insert(int a, Node* now);
+	Node *Contains(int key, Node *leaf);
+	void remove(Node* leaf);
+	Node* closest(Node* now);
+	void destroyTree(Node* leaf);
+	Node* find(int a);
+	void print(Node* leaf);
 
+public:
 	Tree();
-	void clear(Node* node);
-	void insert(int);
-	void print();
-	int parent(int x);
-	int right(int x);
-	int left(int x);
-	int size();
-	int root();
-	bool contains(int x);
-	void remove(int x);
 	~Tree();
+	void insert(int a);
+	int size();
+	bool contains(int a);
+	int parent (int a);
+	int right (int a);
+	int left (int a);
+	void remove(int a);
+	void print();
+	int root();
+	//void buildTree(Node* Root,int a, int b);
+
 };
 }
