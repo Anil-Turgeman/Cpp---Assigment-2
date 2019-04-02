@@ -1,199 +1,241 @@
-#include "Tree.hpp"
 #include <iostream>
+#include "Tree.hpp"
+#include <string.h>
+
+#include <iostream>
+#include <cmath>
+#include <cassert>
+#include <string>
 
 using namespace std;
+using namespace ariel;
 
-ariel::Tree::Tree():_root(NULL) {}
-ariel::Tree::~Tree(){
-  delete _root;
+Node::Node(int x)
+{
+    this->data = x;
+    this->left = this->right = this->parent = NULL;
 }
 
-int ariel::Tree::root() {
-    if(_root == NULL) {throw std::invalid_argument("Exception,the tree is empty");} 
-    return _root->value();
+// Node::~Node()
+// {
+//     delete this;
+// }
+
+Tree::Tree() //constructor for Tree
+{
+    Tree::myroot = NULL;
+    tree_size = 0;
 }
 
+Tree::~Tree() //destructor for Tree
+{
+    if (myroot == nullptr)
+        return;
+    clear(myroot);
+}
 
-int ariel::Tree::left(int i) {
-    if(!contains(i)){
-      throw std::invalid_argument("Exception, i value not exist in this tree");
+void Tree::clear(Node *node) //a recursive function that clear the tree from the leaves to the root.
+{
+    if (node->left != nullptr)
+        return clear(node->left);
+    if (node->right != nullptr)
+        return clear(node->right);
+    delete node;
+}
+
+void Tree::insert(int x) // insert a node to the tree. It use the helpInsert function.
+{
+    if (contains(x)) //checks if we alredy have the value.
+    {
+        throw string("this tree does alredy contains ");
+        return;
     }
-    return _root->left(i);
-}
+    Node *newNode = new Node(x);
 
-
-int ariel::Tree::right(int i) {
-    if(!contains(i)){
-      throw std::invalid_argument("Exception, i value not exist in this tree");
+    if (tree_size == 0) //if the tree is empty so the node gets into the root.
+    {
+        this->myroot = newNode;
+        this->tree_size++;
+        return;
     }
-    return _root->right(i);
+    helpInsert(newNode, myroot, NULL);
 }
 
+void Tree::helpInsert(Node *newNode, Node *localNode, Node *parent) //a recursive method that checks whre should be the new node and insert it.
+{
 
-int ariel::Tree::size() {
-    if(_root == NULL) return 0;
-    return _root->size();
-}
+    if (localNode == NULL) //if we got into null so the new node should be there.
+    {
+        localNode = newNode;
+        newNode->parent = parent;
+        if (newNode->data > parent->data) //connect the relevant child to the parent.
+        {
+            parent->right = newNode;
+        }
+        else
+        {
+            parent->left = newNode;
+        }
 
-
-
-bool ariel::Tree::contains(int i) {
-    if(_root == NULL || size() == 0) return false;
-    else return _root->contains(i);
-}
-
-
-
-int ariel::Tree::parent(int i) {
-    if(_root == NULL||_root->value()==i) {throw std::invalid_argument("Exception, no such element");}
-    else return _root->parent(i);
-}
-
-
-ariel::Tree& ariel::Tree::insert(int i) {
-    if(contains(i)) {throw std::invalid_argument("Exception,already exsists");}
-    if(_root == NULL) _root = new TreeNode(i);
-    else _root = _root->insert(i);
-    return *this;
-}
-
-ariel::Tree& ariel::Tree::remove(int i) {
-    if(!contains(i)){throw std::invalid_argument("Exception, i not exist in the tree");}
-    else{
-    // ariel::TreeNode* deleted = _root->getByValue(i);
-    _root = _root->remove(i);
-    // deleted->RemoveChild();
-    // delete deleted;
-    // deleted = NULL;
+        this->tree_size++;
+        return;
     }
-    return *this;
-}
-
-void ariel::Tree::print() {
-  if(_root != NULL){
-      _root->print();
-      cout<<""<<endl;
-    }
-    else{
-      throw std::invalid_argument("Exception");
-    }
-}
-
-ariel::TreeNode::TreeNode(int val):_value(val),_right(NULL),_left(NULL) {}
-ariel::TreeNode::~TreeNode(){
-  delete _right;
-  delete _left;
-}
-int ariel::TreeNode::value() {return _value;}
-
-bool ariel::TreeNode::contains(int i) {
-    if(_value==i) return true;
-    else if(i<_value){
-        if(_left== NULL) return false;
-        else return _left->contains(i);
-    }
-    else{
-        if(_right == NULL) return false;
-        else return _right->contains(i);
+    else
+    {
+        if (newNode->data < localNode->data)
+        {
+            helpInsert(newNode, localNode->left, localNode);
+        }
+        if (newNode->data > localNode->data)
+        {
+            helpInsert(newNode, localNode->right, localNode);
+        }
     }
 }
 
-int ariel::TreeNode::size() {
-    int leftCount = 0;
-    int rightCount = 0;
-    if(_left!= NULL) leftCount = _left->size();
-    if(_right!= NULL) rightCount = _right->size();
-    return leftCount+rightCount+1;
+void Tree::print() ///print in-order. It use with helpPrint method//
+{
+    helpPrint(myroot);
 }
-
-ariel::TreeNode* ariel::TreeNode::insert(int i) {
-  if(!contains(i)){
-    if(i<_value){
-        if(_left == NULL) _left = new TreeNode(i);
-        else _left = _left->insert(i);
+void Tree::helpPrint(Node *node) // a recursive method for printing in-order.
+{
+    if (node == NULL)
+        return;
+    if (node->left != NULL)
+    {
+        helpPrint(node->left);
     }
-    else{
-        if(_right == NULL) _right = new TreeNode(i);
-        else _right = _right->insert(i);
-    }
-    return this;
-  }
-  else{
-    throw std::invalid_argument("Exception");
-  }
-}
-
-ariel::TreeNode* ariel::TreeNode::remove(int i) {
-	if(i<_value) _left = _left->remove(i);
-	else if(i>_value) _right = _right->remove(i);
-	else{
-		if(_left == NULL && _right != NULL) return _right;
-		else if(_right == NULL && _left != NULL) return  _left;
-		else if( _right == NULL && _left == NULL){
-			TreeNode* temp = this;
-			delete temp;
-			return this;
-		}
-		else{
-			int minVal = _right->minVal();
-			_value = minVal;
-			setRight(_right->remove(minVal));
-			 }
-		}
-	}
-	return this;
-}
-
-int ariel::TreeNode::minVal() {
-    if(_left == NULL) return _value;
-    else return _left->minVal();
-}
-
-
-int ariel::TreeNode::parent(int i) {
-	if(i<_value){
-        if(_left->value() == i) return _value;
-        else return _left->parent(i);
-    }
-    else{
-        if(_right->value() == i) return _value;
-        else return _right->parent(i);
+    cout << node->data << endl;
+    if (node->right != NULL)
+    {
+        helpPrint(node->right);
     }
 }
 
-int ariel::TreeNode::left(int i) {
-    if(_value == i) return _left->_value;
-    else if(i<_value) return _left->left(i);
-    else return _right->left(i);
+int Tree::parent(int x) // looking for a specific node and return the value of it's parent.
+{
+    if (!contains(x))
+        throw string("this tree does not contains ");
+    return catch_num(myroot, x)->parent->data;
 }
 
-int ariel::TreeNode::right(int i) {
-    if(_value == i) return _right->_value;
-    else if(i<_value) return _left->right(i);
-    else return _right->right(i);
-  }
+int Tree::right(int x) // looking for a specific node and return the value of it's right child.
+{
+    if (!contains(x))
+        throw string("this tree does not contains ");
+    return catch_num(myroot, x)->right->data;
 }
 
-ariel::TreeNode* ariel::TreeNode::getByValue(int i) {
-  if(contains(i)){
-    if(i==_value) return this;
-    else if(i<_value) return _left->getByValue(i);
-    else return _right->getByValue(i);
-  }
-  else{
-    throw std::invalid_argument("Exception,i not exist in tree");
-  }
+int Tree::left(int x) // looking for a specific node and return the value of it's left child.
+{
+    if (!contains(x))
+        throw string("this tree does not contains ");
+    ;
+    return catch_num(myroot, x)->left->data;
 }
 
-
-void ariel::TreeNode::print() {
-    if(_left!= NULL) _left->print();
-    std::cout<<_value<<",";
-    if(_right!= NULL) _right->print();
+Node *Tree::catch_num(Node *node, int x) // a recursive method that gets a value and return the relevant node of it.
+{
+    if (node->data == x)
+        return node;
+    if (x < node->data)
+        return catch_num(node->left, x);
+    return catch_num(node->right, x);
 }
 
+int Tree::size() //check how items we have in our tree.
+{
 
-void ariel::TreeNode::RemoveChild() {
-    _left= NULL;
-    _right= NULL;
-  }
+    return tree_size;
+}
+
+int Tree::root() // returns the value of the root
+{
+    return this->myroot->data;
+}
+
+bool Tree::contains(int x) //check if our tree contains some value. It use the helpContains method.
+{
+    return helpContains(myroot, x);
+}
+bool Tree::helpContains(Node *node, int x) // a recursive method that check if our tree contains some value.
+{
+    if (myroot == NULL)
+    {
+        return false;
+    }
+
+    if (node->data == x)
+    {
+        return true;
+    }
+
+    if (x < node->data)
+    {
+        if (node->left == NULL)
+            return false;
+        return helpContains(node->left, x);
+    }
+    else
+    {
+        if (node->right == NULL)
+            return false;
+    }
+    return helpContains(node->right, x);
+}
+
+void Tree::remove(int x) //a method for removing some elements from our tree.
+{
+        cout<<"remove"<<endl;
+
+    if (!contains(x))
+    {
+        throw string("this tree does not contains ");
+        return;
+    }
+    Node* target = catch_num(myroot, x);
+
+    //Node *target = &target;
+    if (target->left == NULL && target->right == NULL) //////case 1
+    {
+        if (target->parent->left==target) {
+            target->parent->left=NULL;
+        }else{target->parent->right=NULL;}
+        
+        delete target;
+        target = nullptr;
+        tree_size--;
+        return ;
+    }
+    if (((target->left == NULL) || (target->right == NULL)) && (target->parent->left == target)) ////case 2.1             
+    {
+        if (target->left != NULL)
+        {
+            target->parent->left = target->left;
+            target->left->parent = target->parent;
+            delete target;
+        }
+        if (target->right != NULL)
+        {
+            target->parent->left = target->right;
+            target->right->parent = target->parent;
+            delete target;
+        }
+    }
+
+    if (((target->left == NULL) || (target->right == NULL)) && (target->parent->right == target)) ////case 2.2
+    {
+        if (target->left != NULL)
+        {
+            target->parent->right = target->left;
+            target->left->parent = target->parent;
+            delete target;
+        }
+        if (target->right != NULL)
+        {
+            target->parent->right = target->right;
+            target->right->parent = target->parent;
+            delete target;
+        }
+    }
+}
